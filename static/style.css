@@ -1,0 +1,137 @@
+/* Reset some basic defaults */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and container settings */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Headings and text */
+h2, h3, h4, h5 {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Form styling */
+form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+form .form-group label {
+    font-weight: bold;
+    color: #495057;
+}
+
+form .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 5px;
+    width: 100%;
+}
+
+form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+/* Button styling */
+button, .btn {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover, .btn:hover {
+    background-color: #0056b3;
+}
+
+/* Link styling */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Table styling for transactions */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #007bff;
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table td {
+    color: #495057;
+}
+
+/* Background and container padding for pages */
+body {
+    background-color: #f1f1f1;
+}
+
+header {
+    background-color: #007bff;
+    padding: 10px 0;
+    color: white;
+    text-align: center;
+    font-size: 24px;
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+footer a {
+    color: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    h2 {
+        font-size: 24px;
+    }
+}

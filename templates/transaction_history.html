@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #34495e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .transaction-details {
+            font-weight: bold;
+            color: #2ecc71;
+        }
+        .bank-details {
+            font-size: 14px;
+            color: #555;
+        }
+        .transaction-type {
+            color: #e74c3c;
+        }
+        .status {
+            font-weight: bold;
+        }
+        .status.successful {
+            color: #2ecc71;
+        }
+        .status.pending {
+            color: #f39c12;
+        }
+        .status.declined {
+            color: #e74c3c;
+        }
+        .print-btn, .share-btn {
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        .print-btn:hover, .share-btn:hover {
+            opacity: 0.8;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+    </style>
+    <script>
+        function printTransaction(transactionId) {
+            var printWindow = window.open('', '', 'height=600,width=800');
+            var content = document.getElementById('transaction-' + transactionId).innerHTML;
+            printWindow.document.write('<html><head><title>Transaction Receipt</title>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write('<img src="medify_logo.png" alt="Medify Logo" class="logo" />');  // Medify logo
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function shareTransaction(transactionId) {
+            var content = document.getElementById('transaction-' + transactionId).innerText;
+            var shareText = "Check out my transaction details:\n\n" + content;
+            var mailtoLink = "mailto:?subject=Transaction Details&body=" + encodeURIComponent(shareText);
+            window.location.href = mailtoLink;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Transaction History</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Amount</th>
+                    <th>Transaction Type</th>
+                    <th>Date</th>
+                    <th>Sender Bank Details</th>
+                    <th>Receiver Bank Details</th>
+                    <th>Status</th>
+                    <th>Print</th>
+                    <th>Share</th> <!-- Share button column -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="transaction-12345">
+                    <td>12345</td>
+                    <td class="transaction-details">₦5000.00</td>
+                    <td class="transaction-type">Sent</td>
+                    <td>2025-05-04 10:30:00</td>
+                    <td>
+                        <p><strong>John Doe</strong></p>
+                        <p>ABC Bank</p>
+                        <p>Acc No: 1234567890</p>
+                    </td>
+                    <td>
+                        <p><strong>Jane Smith</strong></p>
+                        <p>XYZ Bank</p>
+                        <p>Acc No: 9876543210</p>
+                    </td>
+                    <td>
+                        <span class="status successful">Successful</span>
+                    </td>
+                    <td>
+                        <button class="print-btn" onclick="printTransaction(12345)">Print</button>
+                    </td>
+                    <td>
+                        <button class="share-btn" onclick="shareTransaction(12345)">Share</button>
+                    </td>
+                </tr>
+                <tr id="transaction-12346">
+                    <td>12346</td>
+                    <td class="transaction-details">₦2000.00</td>
+                    <td class="transaction-type">Received</td>
+                    <td>2025-05-03 14:15:00</td>
+                    <td>
+                        <p><strong>Michael Johnson</strong></p>
+                        <p>DEF Bank</p>
+                        <p>Acc No: 1122334455</p>
+                    </td>
+                    <td>
+                        <p><strong>John Doe</strong></p>
+                        <p>ABC Bank</p>
+                        <p>Acc No: 1234567890</p>
+                    </td>
+                    <td>
+                        <span class="status pending">Pending</span>
+                    </td>
+                    <td>
+                        <button class="print-btn" onclick="printTransaction(12346)">Print</button>
+                    </td>
+                    <td>
+                        <button class="share-btn" onclick="shareTransaction(12346)">Share</button>
+                    </td>
+                </tr>
+                <tr id="transaction-12347">
+                    <td>12347</td>
+                    <td class="transaction-details">₦3000.00</td>
+                    <td class="transaction-type">Sent</td>
+                    <td>2025-05-02 09:00:00</td>
+                    <td>
+                        <p><strong>Emily Clark</strong></p>
+                        <p>GHI Bank</p>
+                        <p>Acc No: 9988776655</p>
+                    </td>
+                    <td>
+                        <p><strong>John Doe</strong></p>
+                        <p>ABC Bank</p>
+                        <p>Acc No: 1234567890</p>EC2AC2F5
+                    </td>
+                    <td>
+                        <span class="status declined">Declined</span>
+                    </td>
+                    <td>
+                        <button class="print-btn" onclick="printTransaction(12347)">Print</button>
+                    </td>
+                    <td>
+                        <button class="share-btn" onclick="shareTransaction(12347)">Share</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

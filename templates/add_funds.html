@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Funds</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .btn-group button {
+      padding: 10px 15px;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-group button.active {
+      background: #2ecc71;
+    }
+
+    .section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    button.submit {
+      background: #2ecc71;
+    }
+
+    .currency {
+      color: #888;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Add Funds & More</h2>
+
+  <div class="btn-group">
+    <button onclick="showSection('transfer')">Transfer Funds</button>
+    <button onclick="showSection('receive')">Receive Funds</button>
+    <button onclick="showSection('bills')">Pay Bills</button>
+    <button onclick="showSection('data')">Buy Data</button>
+    <button onclick="showSection('airtime')">Buy Airtime</button>
+  </div>
+
+  <form method="POST" action="/handle_funds">
+    <!-- Transfer Section -->
+    <div id="transfer" class="section">
+      <h4>Transfer Funds</h4>
+      
+      <label>Recipient (Username or External Account Number):</label>
+      <input type="text" name="recipient" required />
+
+      <label>Select (NGN or USD):</label>
+      <select name="naira or usd" id="">
+        <option value="naira">Naira</option>
+        <option value="usd">Dollar</option>
+      </select>
+      <input type="number" name="amount"  placeholder="Type Amount"  required />
+
+      <label>Note (optional):</label>
+      <input type="text" name="note" />
+
+      <label>Transfer to:</label>
+      <select name="transfer_to" required>
+        <option value="platform">Platform User</option>
+        <option value="external">External Account</option>
+      </select>
+
+      <button type="submit" name="action" value="transfer" class="submit">Send</button>
+    </div>
+
+   <!-- Receive Funds Section -->
+<div id="receive" class="section">
+    <h4>Receive Funds</h4>
+    
+    <p><strong>Your Account Number:</strong> {{ user.account_number }}</p>
+    <p><strong>Solana Wallet:</strong> {{ user.solana_public }}</p>
+    
+    <!-- Display the QR Code Image -->
+    <div style="text-align: center; margin-top: 20px;">
+      <p>Scan this QR code to receive funds:</p>
+      <img src="" alt="QR Code for Receiving Funds" />
+    </div>
+    
+    <p>You can share this QR code with anyone who wants to send you funds.</p>
+  </div>
+  
+
+    <!-- Bills Section -->
+    <div id="bills" class="section">
+      <h4>Pay Bills</h4>
+      
+      <label>Select Biller:</label>
+      <select name="biller">
+        <option value="electricity">Electricity</option>
+        <option value="water">Water</option>
+        <option value="cable">Cable TV</option>
+      </select>
+
+      <label>Account/Customer Number:</label>
+      <input type="text" name="customer_number" required />
+
+      <label>Amount:</label>
+      <input type="number" name="bill_amount" required />
+
+      <button type="submit" name="action" value="pay_bill" class="submit">Pay Bill</button>
+    </div>
+
+    <!-- Data Section -->
+    <div id="data" class="section">
+      <h4>Buy Data</h4>
+
+      <label>Network:</label>
+      <select name="network">
+        <option value="mtn">MTN</option>
+        <option value="airtel">Airtel</option>
+        <option value="glo">Glo</option>
+        <option value="9mobile">9mobile</option>
+      </select>
+
+      <label>Phone Number:</label>
+      <input type="text" name="phone_number" required />
+
+      <label>Data Plan:</label>
+      <select name="data_plan">
+        <option value="500MB">500MB - ₦100</option>
+        <option value="1GB">1GB - ₦200</option>
+        <option value="2GB">2GB - ₦500</option>
+      </select>
+
+      <button type="submit" name="action" value="buy_data" class="submit">Buy Data</button>
+    </div>
+
+    <!-- Airtime Section -->
+    <div id="airtime" class="section">
+      <h4>Buy Airtime</h4>
+
+      <label>Network:</label>
+      <select name="airtime_network">
+        <option value="mtn">MTN</option>
+        <option value="airtel">Airtel</option>
+        <option value="glo">Glo</option>
+        <option value="9mobile">9mobile</option>
+      </select>
+
+      <label>Phone Number:</label>
+      <input type="text" name="airtime_phone" required />
+
+      <label>Amount:</label>
+      <input type="number" name="airtime_amount" required />
+
+      <button type="submit" name="action" value="buy_airtime" class="submit">Buy Airtime</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function showSection(sectionId) {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+
+    const buttons = document.querySelectorAll('.btn-group button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // Show first section by default
+  document.addEventListener("DOMContentLoaded", function () {
+    showSection('transfer');
+  });
+</script>
+
+</body>
+</html>

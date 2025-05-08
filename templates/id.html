@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Identification Documents</title>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+}
+
+p {
+    color: #666;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+select, input[type="text"], input[type="file"] {
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+button[type="submit"] {
+    width: 100%;
+    height: 40px;
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #3e8e41;
+}
+
+
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <img src="../static/logo.jpg" alt="Logo">
+
+        <h1 style="text-align: center;">UPLOAD IDENTIFICATION DOCUMENT</h1>
+        <label for="phonenumber">Phone Number</label>
+        <input type="text"  >
+        <p>Please upload a valid government-issued ID to verify your identity.</p>
+        <form id="upload-form" method="POST" action="/upload-document" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="document-type">Document Type:</label>
+                <select id="document-type" name="document-type">
+                    <option value="">Select Document Type</option>
+                    <option value="passport">Passport</option>
+                    <option value="driver's-license">Driver's License</option>
+                    <option value="national-id-card">National ID Card</option>
+                    <option value="other">Other (please specify)</option>
+                </select>
+            </div>
+            <div id="other-document-form" style="display: none;">
+                <div class="form-group">
+                    <label for="other-document-name">Name of ID Document:</label>
+                    <input type="text" id="other-document-name" name="other-document-name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="document-upload">Upload Document:</label>
+                <input type="file" id="document-upload" name="document-upload" accept=".pdf, .jpg, .jpeg, .png">
+            </div>
+            <div class="form-group">
+                <label for="document-upload">UPLOAD Document ID NUMBER :</label>
+                <input type="test" id="document-upload" name="idnumber">
+            </div>
+            <button type="submit">Upload Document</button>
+        </form>
+    </div>
+    
+<!-- Add this inside your existing HTML, just after the file input -->
+<div class="form-group" id="file-preview" style="display: none;">
+    <label>File Preview:</label>
+    <div id="preview-container"></div>
+</div>
+
+<script>
+    document.getElementById('document-type').addEventListener('change', function() {
+        if (this.value === 'other') {
+            document.getElementById('other-document-form').style.display = 'block';
+        } else {
+            document.getElementById('other-document-form').style.display = 'none';
+        }
+    });
+
+    document.getElementById('document-upload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const previewContainer = document.getElementById('preview-container');
+        const filePreviewSection = document.getElementById('file-preview');
+        
+        previewContainer.innerHTML = ''; // Clear previous content
+
+        if (file) {
+            const fileURL = URL.createObjectURL(file);
+            filePreviewSection.style.display = 'block';
+
+            if (file.type.startsWith('image/')) {
+                // Display image
+                const img = document.createElement('img');
+                img.src = fileURL;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '300px';
+                previewContainer.appendChild(img);
+            } else if (file.type === 'application/pdf') {
+                // Display PDF
+                const iframe = document.createElement('iframe');
+                iframe.src = fileURL;
+                iframe.width = '100%';
+                iframe.height = '500px';
+                previewContainer.appendChild(iframe);
+            } else {
+                // Unsupported file type
+                previewContainer.innerText = 'Selected file type is not previewable.';
+            }
+        } else {
+            filePreviewSection.style.display = 'none';
+        }
+    });
+</script>
+
+    <script>
+        document.getElementById('document-type').addEventListener('change', function() {
+            if (this.value === 'other') {
+                document.getElementById('other-document-form').style.display = 'block';
+            } else {
+                document.getElementById('other-document-form').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
