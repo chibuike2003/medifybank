@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill Payment</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    label {
+      font-size: 16px;
+      color: #333;
+    }
+
+    select, input {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0b5ed7;
+    }
+
+    .bill-agency {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f1f1f1;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 8px;
+    }
+
+    .bill-agency img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+
+    .bill-agency span {
+      font-size: 16px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Pay Utility Bills</h2>
+
+    <form action="/pay-bills" method="POST">
+      <label for="bill_type">Select Bill Type</label>
+      <select id="bill_type" name="bill_type">
+        <option value="airtime">Airtime</option>
+        <option value="electricity">Electricity</option>
+        <option value="internet">Internet</option>
+        <option value="tv_subscription">TV Subscription</option>
+        <option value="water">Water</option>
+      </select>
+
+      <label for="provider">Provider</label>
+      <select id="provider" name="provider">
+        <option value="mtn">MTN</option>
+        <option value="glo">GLO</option>
+        <option value="etisalat">Etisalat</option>
+        <option value="phed">PHED (Electricity)</option>
+        <option value="spectranet">Spectranet (Internet)</option>
+        <option value="dstv">DSTV</option>
+        <option value="gotv">GOtv</option>
+      </select>
+
+      <label for="account_number">Account Number / Phone Number</label>
+      <input type="text" id="account_number" name="account_number" placeholder="Enter phone number or account number" required>
+
+      <label for="amount">Amount</label>
+      <input type="number" id="amount" name="amount" placeholder="Enter amount (₦)" required>
+
+      <button type="submit">Pay Bill</button>
+    </form>
+
+    <h3>Available Bill Agencies</h3>
+    <div class="bill-agency">
+      <img src="https://via.placeholder.com/30" alt="MTN Logo">
+      <span>MTN Airtime</span>
+    </div>
+    <div class="bill-agency">
+      <img src="https://via.placeholder.com/30" alt="GLO Logo">
+      <span>GLO Airtime</span>
+    </div>
+    <div class="bill-agency">
+      <img src="https://via.placeholder.com/30" alt="PHED Logo">
+      <span>PHED Electricity</span>
+    </div>
+    <div class="bill-agency">
+      <img src="https://via.placeholder.com/30" alt="Spectranet Logo">
+      <span>Spectranet Internet</span>
+    </div>
+    <div class="bill-agency">
+      <img src="https://via.placeholder.com/30" alt="DSTV Logo">
+      <span>DSTV Subscription</span>
+    </div>
+    <div class="bill-agency">
+      <img src="https://via.placeholder.com/30" alt="GoTV Logo">
+      <span>GOtv Subscription</span>
+    </div>
+  </div>
+
+</body>
+</html>

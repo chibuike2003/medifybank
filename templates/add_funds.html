@@ -93,33 +93,111 @@
     <button onclick="showSection('data')">Buy Data</button>
     <button onclick="showSection('airtime')">Buy Airtime</button>
   </div>
+<form method="POST" action="/handle_funds">
+  <div id="transfer" class="section">
+    <h4>Transfer Funds</h4>
 
-  <form method="POST" action="/handle_funds">
-    <!-- Transfer Section -->
-    <div id="transfer" class="section">
-      <h4>Transfer Funds</h4>
-      
-      <label>Recipient (Username or External Account Number):</label>
-      <input type="text" name="recipient" required />
+    <label>Recipient (Username or External Account Number):</label>
+    <input type="text" name="recipient" id="recipient" required />
 
-      <label>Select (NGN or USD):</label>
-      <select name="naira or usd" id="">
-        <option value="naira">Naira</option>
-        <option value="usd">Dollar</option>
+    <label>Select Currency:</label>
+    <select name="currency" required>
+      <option value="naira">Naira</option>
+      <option value="usd">Dollar</option>
+    </select>
+
+    <input type="number" name="amount" placeholder="Type Amount" required />
+
+    <label>Note (optional):</label>
+    <input type="text" name="note" />
+
+    <label>Transfer to:</label>
+    <select name="transfer_to" id="transfer_to" onchange="toggleExternalFields()" required>
+      <option value="platform">Platform User</option>
+      <option value="external">External Account</option>
+    </select>
+
+    <!-- External Account Fields -->
+    <div id="externalFields" style="display:none; margin-top: 10px;">
+      <label>Account Number:</label>
+      <input type="text" id="account_number" name="account_number" maxlength="10" onblur="getBanksForAccount()" />
+
+      <label>Bank Name:</label>
+      <select id="bank_code" name="bank_code" onchange="verifyBankAccount()">
+        <option value="">Select Bank</option>
       </select>
-      <input type="number" name="amount"  placeholder="Type Amount"  required />
 
-      <label>Note (optional):</label>
-      <input type="text" name="note" />
-
-      <label>Transfer to:</label>
-      <select name="transfer_to" required>
-        <option value="platform">Platform User</option>
-        <option value="external">External Account</option>
-      </select>
-
-      <button type="submit" name="action" value="transfer" class="submit">Send</button>
+      <label>Account Name:</label>
+      <input type="text" id="account_name" name="account_name" readonly />
     </div>
+
+    <button type="submit" name="action" value="transfer" class="submit">Send</button>
+  </div>
+</form>
+
+<script>
+  function toggleExternalFields() {
+    const transferTo = document.getElementById("transfer_to").value;
+    document.getElementById("externalFields").style.display = (transferTo === "external") ? "block" : "none";
+  }
+
+  async function getBanksForAccount() {
+    const accountNumber = document.getElementById("account_number").value;
+    if (accountNumber.length !== 10) return;
+
+    try {
+      const response = await fetch("/get-banks-for-account", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ account_number: accountNumber })
+      });
+
+      const data = await response.json();
+      const bankSelect = document.getElementById("bank_code");
+      bankSelect.innerHTML = '<option value="">Select Bank</option>'; // Reset options
+
+      if (data.success && data.banks.length > 0) {
+        data.banks.forEach(bank => {
+          const option = document.createElement("option");
+          option.value = bank.code;
+          option.textContent = bank.name;
+          bankSelect.appendChild(option);
+        });
+      } else {
+        alert("No matching banks found for this account number.");
+      }
+    } catch (error) {
+      console.error("Error fetching banks:", error);
+    }
+  }
+
+  async function verifyBankAccount() {
+    const accountNumber = document.getElementById("account_number").value;
+    const bankCode = document.getElementById("bank_code").value;
+
+    if (accountNumber.length === 10 && bankCode !== "") {
+      try {
+        const response = await fetch("/verify-bank", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ account_number: accountNumber, bank_code: bankCode }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          document.getElementById("account_name").value = data.account_name;
+        } else {
+          alert("Invalid bank details.");
+          document.getElementById("account_name").value = "";
+        }
+      } catch (error) {
+        console.error("Verification error:", error);
+      }
+    }
+  }
+</script>
 
    <!-- Receive Funds Section -->
 <div id="receive" class="section">

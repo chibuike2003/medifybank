@@ -2,159 +2,436 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
-    <meta name="description" content="Medify: A digital banking platform for secure and easy management of financial assets, investments, and transactions.">
-<meta name="keywords" content="digital banking, online banking, financial management, investments, transactions, secure banking">
-<meta name="author" content="MEDIFY BANK">
-
-
-    <title>WELCOME TO MEDIFY BANK</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalPay Crypto Gateway - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-            color: #fff;
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .input-field {
+            @apply w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+        }
+        .btn-primary {
+            @apply w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200;
+        }
+        .btn-secondary {
+            @apply w-full px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-200;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
-            text-align: center;
-            overflow: hidden;
+            align-items: center;
+            z-index: 1000;
         }
-        
-        .card {
-            background-color: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(12px);
-            animation: fadeIn 2s ease forwards;
-            max-width: 600px;
-            opacity: 0;
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
         }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .logo-container {
-            perspective: 1000px;
-            margin-bottom: 30px;
-        }
-        
-        .logo {
-            width: 150px;
-            height: 150px;
-            animation: flipLogo 5s infinite linear, glowPulse 3s infinite ease-in-out;
-            transform-style: preserve-3d;
-            transition: transform 0.3s ease;
-        }
-        
-        .logo:hover {
-            transform: scale(1.1) rotateY(360deg);
-        }
-        
-        @keyframes flipLogo {
-            0% {
-                transform: rotateY(0deg);
-            }
-            100% {
-                transform: rotateY(360deg);
-            }
-        }
-        
-        @keyframes glowPulse {
-            0%, 100% {
-                filter: drop-shadow(0 0 4px #00ffff);
-            }
-            50% {
-                filter: drop-shadow(0 0 12px #00ffff);
-            }
-        }
-        
-        h1 {
-            font-size: 3rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
-            animation: slideUp 1.2s ease-out 0.5s both;
-            opacity: 0;
-        }
-        
-        p {
-            font-size: 1.2rem;
-            opacity: 0.85;
-            animation: slideUp 1.5s ease-out 1.9s both;
-            opacity: 0;
-        }
-        
-        @keyframes slideUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .button-container {
-            margin-top: 40px;
-        }
-        
-        .button {
-            padding: 12px 24px;
+        .modal-close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            color: #6b7280;
         }
-        
-        .create-account-btn {
-            background-color: #4CAF50;
-            color: #fff;
-        }
-        
-        .create-account-btn:hover {
-            background-color: #3e8e41;
-        }
-        
-        .login-btn {
-            background-color: #2196F3;
-            color: #fff;
-            margin-left: 20px;
-        }
-        
-        .login-btn:hover {
-            background-color: #1A76D2;
+        .modal-close-button:hover {
+            color: #1f2937;
         }
     </style>
 </head>
-<body>
-    <div class="card">
-        <div class="logo-container">
-            <img src="../static/logo.jpg" alt="Medify Logo" class="logo" style="border-radius: 50%;">
-        </div>
-        <h1>WELCOME TO MEDIFY BANK</h1>
-        <p>A digital banking platform for secure and easy management of financial assets, investments, and transactions.</p>
-        <div class="button-container">
-           <a href="{{ url_for('signup') }}"><button class="button create-account-btn">Create an Account</button></a> 
-           <a href="{{ url_for('login') }}"> <button class="button login-btn">Login</button></a> 
+<body class="flex flex-col min-h-screen">
+    <header class="bg-white shadow-sm py-4">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-2xl font-bold text-blue-600">GlobalPay</a>
+    
+            <!-- Hamburger Button (Visible on Small Screens) -->
+            <button id="menu-toggle" class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+    
+            <!-- Navigation Links -->
+            <div id="nav-links" class="hidden md:flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                    <a href="{{ url_for('send_crypto') }}" class="text-gray-600 hover:text-blue-600">Send</a>
+                    <a href="{{ url_for('receive_crypto') }}" class="text-gray-600 hover:text-blue-600">Receive</a>
+                    <a href="{{ url_for('buy_solana') }}" class="text-gray-600 hover:text-blue-600">Buy SOL</a>
+                    <a href="{{ url_for('convert_currency') }}" class="text-gray-600 hover:text-blue-600">Convert</a>
+                    <a href="{{ url_for('transactions') }}" class="text-gray-600 hover:text-blue-600">Transactions</a>
+                    <a href="{{ url_for('activity_log') }}" class="text-gray-600 hover:text-blue-600">Activity</a>
+                    <a href="{{ url_for('report_issue') }}" class="text-gray-600 hover:text-blue-600">Help</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-600 hover:text-blue-600">Contact</a>
+                    <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-700 font-semibold">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="text-gray-600 hover:text-blue-600">Login</a>
+                    <a href="{{ url_for('signup') }}" class="text-blue-600 hover:text-blue-700 font-semibold">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Toggle Script -->
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+    
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('hidden');
+        });
+    </script>
+    
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <section class="text-center py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg shadow-xl">
+            <h1 class="text-5xl font-extrabold mb-4 animate-fade-in-down">Your Global Financial Hub</h1>
+            <p class="text-xl mb-8 animate-fade-in-up">Seamlessly manage fiat and crypto, send money globally, and convert currencies with ease.</p>
+            <div class="space-x-4 animate-fade-in-up flex justify-center flex-wrap gap-4">
+                {% if current_user.is_authenticated %}
+                    <button id="showMimePhraseBtn" class="px-8 py-4 bg-yellow-400 text-gray-800 font-bold rounded-lg shadow-lg hover:bg-yellow-500 transition duration-300">Reveal Mime Phrase (Once)</button>
+                {% else %}
+                    <a href="{{ url_for('signup') }}" class="px-8 py-4 bg-white text-blue-600 font-bold rounded-lg shadow-lg hover:bg-gray-100 transition duration-300">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white hover:text-blue-600 transition duration-300">Login</a>
+                {% endif %}
+            </div>
+        </section>
+
+        {% if current_user.is_authenticated %}
+        <section class="py-8">
+            <div class="bg-white p-6 rounded-lg shadow-md text-center max-w-md mx-auto">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Account Number</h2>
+                <p id="accountNumberDisplay" class="text-4xl font-extrabold text-blue-600 mb-4">{{ current_user.account_number }}</p>
+                <p class="text-gray-600 text-sm mb-4">Use this unique number for internal transfers within GlobalPay.</p>
+                <div class="flex flex-col sm:flex-row gap-2">
+                    <button id="copyAccountNumberBtn" class="btn-primary flex-1 px-4 py-2 text-sm">Copy Account Number</button>
+                    <button id="shareAccountNumberBtn" class="btn-secondary flex-1 px-4 py-2 text-sm">Share Account Number</button>
+                    <button id="validateAccountNumberBtn" class="btn-primary flex-1 px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700">Validate Account</button>
+                </div>
+                <p id="accountNumberStatus" class="text-center text-sm mt-2 hidden"></p>
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="py-16">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Why Choose GlobalPay?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <div class="text-blue-500 text-5xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto w-16 h-16"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Global Reach</h3>
+                    <p class="text-gray-600">Send and receive money across borders with support for various fiat and cryptocurrencies.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <div class="text-green-500 text-5xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto w-16 h-16"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Flexible Conversions</h3>
+                    <p class="text-gray-600">Convert between Naira, USD, SOL, USDC, BTC, ETH, and more with competitive rates.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                    <div class="text-purple-500 text-5xl mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto w-16 h-16"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M9 12l2 2 4-4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Secure & Reliable</h3>
+                    <p class="text-gray-600">Your funds and data are protected with industry-leading security measures.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="mimePhraseModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button class="modal-close-button" onclick="closeMimePhraseModal()">&times;</button>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Your Unique Mime Phrase</h2>
+            <p class="text-gray-700 text-sm mb-4 text-center">
+                This phrase is crucial for recovering your account. Keep it safe and private.
+                **You can only view/copy/share this once from this interface.**
+            </p>
+            <div class="bg-gray-100 p-4 rounded-lg mb-4 text-center">
+                <p id="mimePhraseDisplay" class="font-mono text-xl font-semibold text-gray-900 break-words">
+                    {% if current_user.is_authenticated and current_user.mimephrase %}
+                        {{ current_user.mimephrase }}
+                    {% else %}
+                        Mime phrase not available or already revealed.
+                    {% endif %}
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button id="copyMimePhraseBtn" class="btn-primary flex-1">Copy Phrase</button>
+                <button id="shareMimePhraseBtn" class="btn-secondary flex-1">Share Phrase</button>
+            </div>
+            <p id="mimePhraseStatus" class="text-center text-sm text-green-600 mt-4 hidden">Phrase has been successfully copied/shared.</p>
         </div>
     </div>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 GlobalPay Crypto Gateway. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const mimePhraseModal = document.getElementById('mimePhraseModal');
+        const showMimePhraseBtn = document.getElementById('showMimePhraseBtn');
+        const mimePhraseDisplay = document.getElementById('mimePhraseDisplay');
+        const copyMimePhraseBtn = document.getElementById('copyMimePhraseBtn');
+        const shareMimePhraseBtn = document.getElementById('shareMimePhraseBtn');
+        const mimePhraseStatus = document.getElementById('mimePhraseStatus');
+
+        let mimePhraseRevealed = false; // Client-side flag for "once" effect in this session
+
+        function openMimePhraseModal() {
+            if (!mimePhraseRevealed) {
+                mimePhraseModal.classList.remove('hidden');
+                // Ensure the phrase is displayed if it's the first time
+                if (mimePhraseDisplay.textContent.includes('Mime phrase not available')) {
+                    mimePhraseDisplay.textContent = '{{ current_user.mimephrase if current_user.is_authenticated and current_user.mimephrase else "Mime phrase not available or already revealed." }}';
+                }
+            } else {
+                alert('Your mime phrase has already been revealed and copied/shared in this session.');
+            }
+        }
+
+        function closeMimePhraseModal() {
+            mimePhraseModal.classList.add('hidden');
+        }
+
+        async function handleMimePhraseAction(action) {
+            const phrase = mimePhraseDisplay.textContent.trim();
+
+            if (phrase === 'Mime phrase not available or already revealed.') {
+                alert('Mime phrase is not available to copy or share.');
+                return;
+            }
+
+            if (action === 'copy') {
+                try {
+                    // Use document.execCommand('copy') for broader compatibility in iframes
+                    const dummyTextArea = document.createElement('textarea');
+                    dummyTextArea.value = phrase;
+                    document.body.appendChild(dummyTextArea);
+                    dummyTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummyTextArea);
+
+                    alert('Mime phrase copied to clipboard!');
+                    mimePhraseStatus.textContent = 'Phrase copied successfully!';
+                    mimePhraseStatus.classList.remove('hidden');
+                } catch (err) {
+                    console.error('Failed to copy mime phrase: ', err);
+                    alert('Failed to copy mime phrase. Please try manually.');
+                }
+            } else if (action === 'share') {
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'GlobalPay Mime Phrase',
+                            text: `My GlobalPay Mime Phrase: ${phrase}`,
+                        });
+                        mimePhraseStatus.textContent = 'Phrase shared successfully!';
+                        mimePhraseStatus.classList.remove('hidden');
+                    } catch (error) {
+                        if (error.name === 'AbortError') {
+                            console.log('Share was aborted by the user.');
+                        } else {
+                            console.error('Sharing failed:', error);
+                            alert('Failed to share mime phrase. Please copy manually.');
+                        }
+                    }
+                } else {
+                    alert('Web Share API is not supported in your browser. Please use the "Copy Phrase" button.');
+                    return; // Don't mark as revealed if sharing is not supported
+                }
+            }
+
+            // Mark as revealed on the client side
+            mimePhraseRevealed = true;
+            showMimePhraseBtn.disabled = true;
+            showMimePhraseBtn.textContent = 'Mime Phrase Revealed';
+            showMimePhraseBtn.classList.remove('bg-yellow-400', 'hover:bg-yellow-500');
+            showMimePhraseBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+
+            // Optionally clear the phrase from display after action to emphasize "once"
+            mimePhraseDisplay.textContent = 'Phrase revealed. Not displayed again for security.';
+            copyMimePhraseBtn.disabled = true;
+            shareMimePhraseBtn.disabled = true;
+
+            // In a real application, you'd send an AJAX request here to inform the backend
+            // that the mime phrase has been revealed and should be invalidated.
+            // Example: fetch('/api/mark_mime_phrase_revealed', { method: 'POST' });
+        }
+
+        if (showMimePhraseBtn) { // Only add listener if the button exists (user is authenticated)
+            showMimePhraseBtn.addEventListener('click', openMimePhraseModal);
+        }
+        if (copyMimePhraseBtn) {
+            copyMimePhraseBtn.addEventListener('click', () => handleMimePhraseAction('copy'));
+        }
+        if (shareMimePhraseBtn) {
+            shareMimePhraseBtn.addEventListener('click', () => handleMimePhraseAction('share'));
+        }
+
+        // Close modal when clicking outside (on overlay)
+        mimePhraseModal.addEventListener('click', (e) => {
+            if (e.target === mimePhraseModal) {
+                closeMimePhraseModal();
+            }
+        });
+
+        // Account Number Actions
+        const accountNumberDisplay = document.getElementById('accountNumberDisplay');
+        const copyAccountNumberBtn = document.getElementById('copyAccountNumberBtn');
+        const shareAccountNumberBtn = document.getElementById('shareAccountNumberBtn');
+        const validateAccountNumberBtn = document.getElementById('validateAccountNumberBtn');
+        const accountNumberStatus = document.getElementById('accountNumberStatus');
+
+        function setAccountNumberStatus(message, type = 'info') {
+            accountNumberStatus.textContent = message;
+            accountNumberStatus.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-blue-600');
+            if (type === 'success') {
+                accountNumberStatus.classList.add('text-green-600');
+            } else if (type === 'error') {
+                accountNumberStatus.classList.add('text-red-600');
+            } else {
+                accountNumberStatus.classList.add('text-blue-600');
+            }
+            setTimeout(() => {
+                accountNumberStatus.classList.add('hidden');
+            }, 3000);
+        }
+
+        if (copyAccountNumberBtn) {
+            copyAccountNumberBtn.addEventListener('click', () => {
+                const accountNumber = accountNumberDisplay.textContent.trim();
+                try {
+                    const dummyTextArea = document.createElement('textarea');
+                    dummyTextArea.value = accountNumber;
+                    document.body.appendChild(dummyTextArea);
+                    dummyTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummyTextArea);
+                    setAccountNumberStatus('Account number copied!', 'success');
+                } catch (err) {
+                    console.error('Failed to copy account number:', err);
+                    setAccountNumberStatus('Failed to copy account number.', 'error');
+                }
+            });
+        }
+
+        if (shareAccountNumberBtn) {
+            shareAccountNumberBtn.addEventListener('click', async () => {
+                const accountNumber = accountNumberDisplay.textContent.trim();
+                if (navigator.share) {
+                    try {
+                        await navigator.share({
+                            title: 'GlobalPay Account Number',
+                            text: `My GlobalPay Account Number: ${accountNumber}`,
+                        });
+                        setAccountNumberStatus('Account number shared!', 'success');
+                    } catch (error) {
+                        if (error.name === 'AbortError') {
+                            console.log('Share was aborted by the user.');
+                        } else {
+                            console.error('Sharing failed:', error);
+                            setAccountNumberStatus('Failed to share account number.', 'error');
+                        }
+                    }
+                } else {
+                    setAccountNumberStatus('Web Share API not supported. Please use copy button.', 'info');
+                }
+            });
+        }
+
+        if (validateAccountNumberBtn) {
+            validateAccountNumberBtn.addEventListener('click', () => {
+                // In a real application, this would send an AJAX request to your Flask backend
+                // to validate the account number against your database or a bank API.
+                // For this example, we'll simulate a client-side validation.
+                const accountNumber = accountNumberDisplay.textContent.trim();
+                if (accountNumber && accountNumber.length === 10 && /^\d+$/.test(accountNumber)) {
+                    setAccountNumberStatus('Account number format is valid (client-side check).', 'success');
+                    // You would typically make a fetch request here:
+                    /*
+                    fetch('/api/validate_account', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ account_number: accountNumber })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.is_valid) {
+                            setAccountNumberStatus('Account number is valid (backend check).', 'success');
+                        } else {
+                            setAccountNumberStatus(data.message || 'Account validation failed.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during account validation:', error);
+                        setAccountNumberStatus('Network error during validation.', 'error');
+                    });
+                    */
+                } else {
+                    setAccountNumberStatus('Invalid account number format.', 'error');
+                }
+            });
+        }
+    </script>
 </body>
 </html>

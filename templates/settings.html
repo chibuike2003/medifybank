@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Account Settings - YourBank</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .settings-container {
+      max-width: 900px;
+      margin: 60px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    .settings-header {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+    }
+    .form-section-title {
+      font-size: 1.25rem;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="settings-container">
+    <div class="settings-header d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">Account Settings</h3>
+      <button class="btn btn-primary">Save Changes</button>
+    </div>
+
+    <!-- Personal Info -->
+    <div>
+      <div class="form-section-title">Personal Information</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="fullname" class="form-label">Full Name</label>
+          <input type="text" id="fullname" class="form-control" placeholder="John Doe">
+        </div>
+        <div class="col-md-6">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" class="form-control" placeholder="john@example.com">
+        </div>
+        <div class="col-md-6">
+          <label for="phone" class="form-label">Phone Number</label>
+          <input type="tel" id="phone" class="form-control" placeholder="+234 8012345678">
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Settings -->
+    <div>
+      <div class="form-section-title">Security Settings</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="current-password" class="form-label">Current Password</label>
+          <input type="password" id="current-password" class="form-control">
+        </div>
+        <div class="col-md-6">
+          <label for="new-password" class="form-label">New Password</label>
+          <input type="password" id="new-password" class="form-control">
+        </div>
+        <div class="col-md-6">
+          <label for="confirm-password" class="form-label">Confirm New Password</label>
+          <input type="password" id="confirm-password" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div>
+      <div class="form-section-title">Notification Preferences</div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="email-alerts" checked>
+        <label class="form-check-label" for="email-alerts">
+          Email me about transactions and activities
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="sms-alerts">
+        <label class="form-check-label" for="sms-alerts">
+          Send SMS alerts for withdrawals
+        </label>
+      </div>
+    </div>
+
+    <div class="text-end mt-4">
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-success">Update Settings</button>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalPay Crypto Gateway - Receive Crypto</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .qr-code-container {
+            @apply flex justify-center items-center p-4 bg-white rounded-lg shadow-inner;
+        }
+        .qr-code-image {
+            @apply w-48 h-48 md:w-64 md:h-64;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-white shadow-sm py-4">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="{{ url_for('dashboard') }}" class="text-2xl font-bold text-blue-600">GlobalPay</a>
+            <div class="space-x-4">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                    <a href="{{ url_for('send_crypto') }}" class="text-gray-600 hover:text-blue-600">Send</a>
+                    <a href="{{ url_for('receive_crypto') }}" class="text-gray-600 hover:text-blue-600">Receive</a>
+                    <a href="{{ url_for('buy_solana') }}" class="text-gray-600 hover:text-blue-600">Buy SOL</a>
+                    <a href="{{ url_for('convert_currency') }}" class="text-gray-600 hover:text-blue-600">Convert</a>
+                    <a href="{{ url_for('transactions') }}" class="text-gray-600 hover:text-blue-600">Transactions</a>
+                    <a href="{{ url_for('activity_log') }}" class="text-gray-600 hover:text-blue-600">Activity</a>
+                    <a href="{{ url_for('report_issue') }}" class="text-gray-600 hover:text-blue-600">Help</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-600 hover:text-blue-600">Contact</a>
+                    <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-700 font-semibold">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="text-gray-600 hover:text-blue-600">Login</a>
+                    <a href="{{ url_for('signup') }}" class="text-blue-600 hover:text-blue-700 font-semibold">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Receive Funds</h1>
+            <p class="text-gray-600 mb-8 text-center">
+                Choose how you want to receive funds: via crypto wallet or bank transfer.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-semibold text-purple-600 mb-4">Solana (SOL)</h2>
+                    <div class="qr-code-container mb-4">
+                        {% if sol_qr_b64 %}
+                            <img src="{{ sol_qr_b64 }}" alt="Solana QR Code" class="qr-code-image">
+                        {% else %}
+                            <p class="text-gray-500">QR Code not available.</p>
+                        {% endif %}
+                    </div>
+                    <p class="font-mono text-sm break-all bg-gray-100 p-2 rounded-md mb-4">{{ solana_address }}</p>
+                    <button onclick="copyToClipboard('{{ solana_address }}', 'solana_copy_btn')" class="btn-primary w-auto px-6 py-2" id="solana_copy_btn">Copy Solana Address</button>
+                    <p class="text-xs text-gray-500 mt-2">Only send SOL to this address.</p>
+                </div>
+
+                <div class="text-center p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-semibold text-green-600 mb-4">USDC (ERC-20/EVM)</h2>
+                    <div class="qr-code-container mb-4">
+                        {% if usdc_qr_b64 %}
+                            <img src="{{ usdc_qr_b64 }}" alt="USDC QR Code" class="qr-code-image">
+                        {% else %}
+                            <p class="text-gray-500">USDC QR Code not available. Your USDC public key might not be set up yet.</p>
+                        {% endif %}
+                    </div>
+                    <p class="font-mono text-sm break-all bg-gray-100 p-2 rounded-md mb-4">{{ usdc_address }}</p>
+                    <button onclick="copyToClipboard('{{ usdc_address }}', 'usdc_copy_btn')" class="btn-primary w-auto px-6 py-2" id="usdc_copy_btn" {% if usdc_address == 'N/A (Generate/Add USDC public key in User model)' %}disabled{% endif %}>Copy USDC Address</button>
+                    <p class="text-xs text-gray-500 mt-2">Only send USDC (ERC-20/EVM) to this address.</p>
+                </div>
+
+                <div class="text-center p-4 border border-gray-200 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-semibold text-blue-600 mb-4">Naira (₦)</h2>
+                    {% if naira_account %}
+                        <div class="bg-gray-100 p-4 rounded-md mb-4 text-left">
+                            <p class="text-sm text-gray-700 mb-2">Receive Naira directly into your GlobalPay account via bank transfer.</p>
+                            <p class="text-lg font-bold text-gray-800">Account Name: {{ current_user.username }}</p>
+                            <p class="text-lg font-bold text-gray-800">Account Number: {{ naira_account.account_number }}</p>
+                            <p class="text-lg font-bold text-gray-800">Bank Name: GlobalPay Bank</p>
+                        </div>
+                        <button onclick="copyToClipboard('{{ naira_account.account_number }}', 'naira_copy_btn')" class="btn-primary w-auto px-6 py-2" id="naira_copy_btn">Copy Account Number</button>
+                        <p class="text-xs text-gray-500 mt-2">Share these details for Naira bank transfers.</p>
+                    {% else %}
+                        <p class="text-gray-500 mb-4">You don't have a Naira account yet.</p>
+                        <a href="{{ url_for('create_bank_account') }}" class="btn-primary w-auto px-6 py-2">Create Naira Account</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function copyToClipboard(text, buttonId) {
+                const dummyTextArea = document.createElement('textarea');
+                dummyTextArea.value = text;
+                document.body.appendChild(dummyTextArea);
+                dummyTextArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummyTextArea);
+
+                const button = document.getElementById(buttonId);
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            }
+        </script>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; {{ now().year }} GlobalPay Crypto Gateway. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

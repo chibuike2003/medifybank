@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f8fafc;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #344050;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+
+    .dashboard-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    header img.logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
+    }
+
+    header .welcome-text {
+      flex-grow: 1;
+    }
+
+    header .welcome-text h2 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: #1e293b;
+    }
+
+    header .welcome-text p {
+      margin: 0;
+      color: #64748b;
+      font-size: 1rem;
+    }
+
+    .card {
+      border: none;
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+      background: #fff;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card h4 {
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: #475569;
+      min-width: 140px;
+      margin-bottom: 0.3rem;
+    }
+
+    .info-value {
+      color: #64748b;
+      word-break: break-word;
+      flex-grow: 1;
+    }
+
+    .btn-group-custom {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .btn-custom {
+      flex: 1 1 150px;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 8px rgb(0 0 0 / 0.12);
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary-custom {
+      background-color: #3b82f6;
+      border: none;
+      color: white;
+    }
+
+    .btn-primary-custom:hover {
+      background-color: #2563eb;
+      box-shadow: 0 6px 14px rgb(37 99 235 / 0.4);
+    }
+
+    .btn-success-custom {
+      background-color: #10b981;
+      border: none;
+      color: white;
+    }
+
+    .btn-success-custom:hover {
+      background-color: #059669;
+      box-shadow: 0 6px 14px rgb(5 150 105 / 0.4);
+    }
+
+    .btn-danger-custom {
+      background-color: #ef4444;
+      border: none;
+      color: white;
+    }
+
+    .btn-danger-custom:hover {
+      background-color: #dc2626;
+      box-shadow: 0 6px 14px rgb(220 38 38 / 0.4);
+    }
+
+    /* Modal header styling */
+    .modal-header {
+      background-color: #3b82f6;
+      color: white;
+      border-bottom: none;
+      border-top-left-radius: 1rem;
+      border-top-right-radius: 1rem;
+    }
+
+    .modal-content {
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgb(0 0 0 / 0.15);
+    }
+
+    /* Seed phrase box */
+    #mnemonicBox {
+      background-color: #f1f5f9;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-family: monospace;
+      word-break: break-word;
+      color: #334155;
+      user-select: text;
+      margin-bottom: 1rem;
+    }
+
+    /* Copy success message */
+    #copySuccess {
+      font-weight: 600;
+      color: #10b981;
+      margin-left: 0.75rem;
+    }
+
+    @media (max-width: 576px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn-group-custom {
+        flex-direction: column;
+      }
+
+      .btn-custom {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+  <header>
+    <img src="../static/logo.jpg" alt="Logo" class="logo" />
+    <div class="welcome-text">
+      <h2>Welcome, {{ user.username }}!</h2>
+      <p>We're glad to have you back.</p>
+    </div>
+  </header>
+
+  <section>
+    <h5>Balances</h5>
+    <ul>
+      <li>💵 <strong>Naira (NGN):</strong> {{ user.naira_balance }}</li>
+      <li>💲 <strong>USD:</strong> {{ user.usd_balance }}</li>
+      <li>🌐 <strong>Solana (SOL):</strong> {{ sol_balance }} SOL</li>
+    </ul>
+  </section>
+  <section class="card">
+    <h4>Account Overview</h4>
+
+    <div class="info-row">
+      <div class="info-label">Email:</div>
+      <div class="info-value">{{ user.email }}</div>
+    </div>
+
+    <div class="info-row align-items-center">
+      <div class="info-label">Account Number:</div>
+      <div class="info-value">{{ user.account_number }}</div>
+      <button type="button" class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#accountModal">
+        View
+      </button>
+    </div>
+
+    <div class="info-row align-items-center">
+      <div class="info-label">Solana Wallet:</div>
+      <div class="info-value">{{ user.solana_public }}</div>
+      <button type="button" class="btn btn-success btn-sm ms-3" data-bs-toggle="modal" data-bs-target="#walletModal">
+        View
+      </button>
+    </div>
+
+    <div class="btn-group-custom">
+      <a href="{{ url_for('send_sol') }}" class="btn btn-primary-custom btn-custom text-center">Send Solana or USDC</a>
+      <button class="btn btn-danger-custom btn-custom" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+      <a href="{{ url_for('report_issue') }}" class="btn btn-success-custom btn-custom text-center">Transaction History</a>
+      
+    </div>
+  </section>
+</div>
+
+<!-- Account Number Modal -->
+<div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="accountModalLabel">Bank Account Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Account Name:</strong> {{ user.username }}</p>
+        <p><strong>Account Number:</strong> <span id="accountNumber">{{ user.account_number }}</span></p>
+        <p><strong>Bank:</strong> MEDIFY BANK</p>
+
+        <div class="d-flex gap-2 mt-4 flex-wrap">
+          <button class="btn btn-outline-primary flex-grow-1" onclick="copyAccount()">📋 Copy</button>
+          <button class="btn btn-outline-primary flex-grow-1" onclick="shareAccount()">🔗 Share</button>
+          <a href="id.html" class="btn btn-outline-primary flex-grow-1">Validate Your Account</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Solana Wallet Modal -->
+<div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="walletModalLabel">Solana Wallet Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Wallet Address:</strong></p>
+        <p class="text-break">{{ user.solana_public }}</p>
+        <hr />
+        <p><strong>Seed Phrase:</strong></p>
+        <div id="mnemonicBox">
+          {% if user.mimephrase_validated %}
+            <p class="text-muted fst-italic">Your seed phrase has been validated. For security, it's hidden.</p>
+          {% else %}
+            <p>Your recovery Seed Phrase: <strong>{{ user.mimephrase }}</strong></p>
+          {% endif %}
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-outline-secondary btn-sm" onclick="copyMnemonic()">📋 Copy Seed Phrase</button>
+          {% if user.mimephrase_validated %}
+            <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#revealModal">🔒 View Seed Phrase</button>
+          {% else %}
+            <a href="{{ url_for('validate_mimephrase') }}" class="btn btn-outline-primary btn-sm text-decoration-none">
+              🛡️ Validate Seed Phrase
+            </a>
+          {% endif %}
+          <span id="copySuccess" style="display:none;">Copied!</span>
+        </div>
+
+        {% if user.mimephrase_validated %}
+          <p class="mt-4 text-success fw-semibold">Ready to make transactions with your wallet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reveal Seed Phrase Modal -->
+<div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="revealModalLabel">Your Seed Phrase</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Seed Phrase:</strong></p>
+        <p class="text-break text-danger fw-semibold">{{ user.mimephrase }}</p>
+        <p class="small text-muted fst-italic">Keep this phrase safe and do not share it with anyone.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Logout Confirmation</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>Are you sure you want to logout?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyAccount() {
+    const accountNumber = document.getElementById('accountNumber').innerText;
+    navigator.clipboard.writeText(accountNumber).then(() => {
+      alert('Account number copied to clipboard!');
+    });
+  }
+
+  function shareAccount() {
+    const accountNumber = document.getElementById('accountNumber').innerText;
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Account Number',
+        text: `Here is my account number: ${accountNumber}`,
+      }).catch((error) => {
+        alert('Sharing failed: ' + error);
+      });
+    } else {
+      alert('Share not supported on this browser. You can copy it instead.');
+    }
+  }
+
+  function copyMnemonic() {
+    const mnemonic = `{{ user.mimephrase }}`;
+    navigator.clipboard.writeText(mnemonic).then(() => {
+      const successMsg = document.getElementById('copySuccess');
+      successMsg.style.display = 'inline';
+      setTimeout(() => successMsg.style.display = 'none', 2000);
+    });
+  }
+</script>
+
+<!-- Bootstrap JS bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -1,381 +1,201 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Bank Transfer</title>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f8ff; /* lightblue */
-            color: #333;
+        .error-message {
+            color: red;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: #f5f5f5; /* whitesmoke */
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        header img {
-            max-width: 150px;
-            height: auto;
-        }
-
-        h2 {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 24px;
-        }
-
-        p {
-            color: #888;
-            font-size: 14px;
-        }
-
-        section h4, section h5 {
-            color: #34495e;
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        section p {
-            font-size: 14px;
-            margin: 5px 0;
-        }
-
-        ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        ul li {
-            padding: 12px;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            font-size: 14px;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .button-container a {
-            flex: 1;
-            padding: 12px;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .button-container a:hover {
-            opacity: 0.8;
-        }
-
-        .btn-logout {
-            background-color: #e74c3c;
-        }
-
-        .btn-history {
-            background-color: #3498db;
-        }
-
-        .btn-add-funds {
-            background-color: #2ecc71;
+        .success-message {
+            color: green;
         }
     </style>
 </head>
 <body>
+    <h1>Initiate Bank Transfer (P2P)</h1>
 
-    <div class="container">
-        <header>
-            <!-- Logo -->
-            <img src="../static/logo.jpg" alt="Logo">
-            <h2>Welcome, ODAH SUCCESS JOSEPH!</h2>
-            <p>We're glad to have you back.</p>
-        </header>
+    <p>Your Current Balance: NGN {{ "{:,.2f}".format(current_balance / 100) }}</p>
 
-      <!-- Add Bootstrap CSS and JS (Optional if already included) -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <h2>Create Transfer Recipient</h2>
+    <form id="recipientForm">
+        <label for="recipientName">Recipient Name:</label>
+        <input type="text" id="recipientName" required><br><br>
 
-<section class="p-3">
-    <h4>Account Overview</h4>
-    <p><strong>Email:</strong> success@gmail.com</p>
-    
-    <p>
-        <strong>Account Number:</strong> 5905351115
-        <button class="btn btn-sm btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#accountModal">
-            View
-        </button>
-    </p>
+        <label for="bankSelect">Bank:</label>
+        <select id="bankSelect" required>
+            <option value="">Select Bank</option>
+        </select><br><br>
 
-    <p>
-        <strong>Solana Wallet:</strong> Had5kXmKUnHxjRZEpDFFYqWDx2N33GRhsD3chpoWF3rH
-        <button class="btn btn-sm btn-success ms-2" data-bs-toggle="modal" data-bs-target="#walletModal">
-            View
-        </button>
-    </p>
-</section>
-<!-- Account Number Modal -->
-<div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content rounded-4 shadow-lg">
-        <div class="modal-header bg-primary text-white rounded-top-4">
-          <h5 class="modal-title" id="accountModalLabel">Bank Account Details</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-          <p><strong>Account Name:</strong> ODAH SUCCESS JOSEPH</p>
-          <p><strong>Account Number:</strong> <span id="accountNumber">5905351115</span></p>
-          <p><strong>Bank:</strong> MEDIFY BANK</p>
-  
-          <div class="d-flex gap-2 mt-4">
-            <button class="btn btn-outline-primary w-100" onclick="copyAccount()">📋 Copy</button>
-            <button class="btn btn-outline-success w-100" onclick="shareAccount()">🔗 Share</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    function copyAccount() {
-      const accNum = document.getElementById('accountNumber').innerText;
-      navigator.clipboard.writeText(accNum).then(() => {
-        alert("Account number copied to clipboard!");
-      }).catch(() => {
-        alert("Failed to copy. Please try manually.");
-      });
-    }
-    
-    function shareAccount() {
-      const username = "ODAH SUCCESS JOSEPH";
-      const accountNumber = "5905351115";
-      const text = `Bank Account Details:\nName: ${username}\nNumber: ${accountNumber}\nBank: MEDIFY BANK`;
-    
-      if (navigator.share) {
-        navigator.share({
-          title: 'Bank Account Details',
-          text: text
-        }).catch(err => console.log('Error sharing:', err));
-      } else {
-        alert("Sharing is not supported on this browser.");
-      }
-    }
-    </script>
-    
-<!-- Solana Wallet Modal -->
-<div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-  
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h5 class="modal-title" id="walletModalLabel">Solana Wallet Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-  
-        <!-- Modal Body -->
-        <div class="modal-body">
-          <p><strong>Wallet Address:</strong></p>
-          <p class="text-break">Had5kXmKUnHxjRZEpDFFYqWDx2N33GRhsD3chpoWF3rH</p>
-  
-          <hr>
-  
-          <p><strong>Mnemonic Phrase:</strong></p>
-          <div class="bg-light border rounded p-2" id="mnemonicBox">
-            
-              <p>Your recovery mimephrase: <strong>river-cloud-wind-dream</strong></p>
-            
-          </div>
-  
-          <div class="d-flex flex-wrap gap-2 mt-3">
-            <button class="btn btn-outline-secondary btn-sm" onclick="copyMnemonic()">📋 Copy Mnemonic</button>
-  
-            
-              <a href="/validate_mimephrase">
-                <button class="btn btn-outline-primary btn-sm">🛡️ Validate Mimephrase</button>
-              </a>
-            
-            <button class="btn btn-outline-success w-100" onclick="share()">🔗 Share</button>
+        <label for="accountNumber">Account Number:</label>
+        <input type="text" id="accountNumber" required maxlength="10"><br><br>
 
-            <span id="copySuccess" class="text-success align-self-center" style="display:none;">Copied!</span>
-          </div>
-        </div>
-  
-      </div>
-    </div>
-  </div>
+        <button type="submit">Create Recipient</button>
+        <p id="recipientMessage" class=""></p>
+        <p id="accountName"></p>
+    </form>
+
+    <hr>
+
+    <h2>Initiate Transfer</h2>
+    <form id="transferForm">
+        <label for="transferRecipientCode">Recipient Code:</label>
+        <input type="text" id="transferRecipientCode" required placeholder="Auto-filled after recipient creation"><br><br>
+
+        <label for="transferAmount">Amount (NGN):</label>
+        <input type="number" id="transferAmount" required min="100" step="any"><br><br>
+
+        <label for="transferReason">Reason:</label>
+        <input type="text" id="transferReason" value="Fund Transfer"><br><br>
+
+        <button type="submit">Send Transfer</button>
+        <p id="transferMessage" class=""></p>
+    </form>
+
+    <script>
+        const recipientForm = document.getElementById('recipientForm');
+        const bankSelect = document.getElementById('bankSelect');
+        const accountNumberInput = document.getElementById('accountNumber');
+        const recipientMessage = document.getElementById('recipientMessage');
+        const accountNameDisplay = document.getElementById('accountName');
+        const transferRecipientCodeInput = document.getElementById('transferRecipientCode');
+        const transferForm = document.getElementById('transferForm');
+        const transferMessage = document.getElementById('transferMessage');
+
+        // Fetch banks on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch('/get_banks');
+                const data = await response.json();
+                if (data.status === 'success') {
+                    data.banks.forEach(bank => {
+                        const option = document.createElement('option');
+                        option.value = bank.code;
+                        option.textContent = bank.name;
+                        bankSelect.appendChild(option);
+                    });
+                } else {
+                    recipientMessage.textContent = 'Failed to load banks: ' + data.message;
+                    recipientMessage.className = 'error-message';
+                }
+            } catch (error) {
+                recipientMessage.textContent = 'Network error fetching banks.';
+                recipientMessage.className = 'error-message';
+                console.error('Error fetching banks:', error);
+            }
+        });
+
+        // Resolve account number on input change (after 10 digits)
+        accountNumberInput.addEventListener('input', async () => {
+            const accountNumber = accountNumberInput.value;
+            const bankCode = bankSelect.value;
+            if (accountNumber.length === 10 && bankCode) {
+                try {
+                    const response = await fetch('/resolve_account_number', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ account_number: accountNumber, bank_code: bankCode })
+                    });
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        accountNameDisplay.textContent = 'Account Name: ' + data.data.account_name;
+                        accountNameDisplay.className = ''; // Remove error class if any
+                    } else {
+                        accountNameDisplay.textContent = 'Account resolution failed: ' + data.message;
+                        accountNameDisplay.className = 'error-message';
+                    }
+                } catch (error) {
+                    accountNameDisplay.textContent = 'Network error resolving account.';
+                    accountNameDisplay.className = 'error-message';
+                    console.error('Error resolving account:', error);
+                }
+            } else {
+                accountNameDisplay.textContent = '';
+            }
+        });
 
 
+        // Handle recipient creation form submission
+        recipientForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const recipientName = document.getElementById('recipientName').value;
+            const bankCode = bankSelect.value;
+            const accountNumber = accountNumberInput.value;
 
-  <!-- Solana Wallet Modal -->
-<div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+            const formData = new FormData();
+            formData.append('recipient_name', recipientName);
+            formData.append('bank_code', bankCode);
+            formData.append('account_number', accountNumber);
 
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h5 class="modal-title" id="walletModalLabel">Solana Wallet Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+            try {
+                const response = await fetch('/create_transfer_recipient', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    recipientMessage.textContent = data.message + '. Recipient Code: ' + data.recipient_code;
+                    recipientMessage.className = 'success-message';
+                    transferRecipientCodeInput.value = data.recipient_code; // Auto-fill for transfer
+                } else {
+                    recipientMessage.textContent = data.message;
+                    recipientMessage.className = 'error-message';
+                }
+            } catch (error) {
+                recipientMessage.textContent = 'Network error creating recipient.';
+                recipientMessage.className = 'error-message';
+                console.error('Error creating recipient:', error);
+            }
+        });
 
-        <!-- Modal Body -->
-        <div class="modal-body">
-          <p><strong>Wallet Address:</strong></p>
-          <p class="text-break">Had5kXmKUnHxjRZEpDFFYqWDx2N33GRhsD3chpoWF3rH</p>
+        // Handle transfer initiation form submission
+        transferForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const recipientCode = transferRecipientCodeInput.value;
+            const amount = document.getElementById('transferAmount').value;
+            const reason = document.getElementById('transferReason').value;
 
-          <hr>
+            const formData = new FormData();
+            formData.append('recipient_code', recipientCode);
+            formData.append('amount', amount);
+            formData.append('reason', reason);
 
-          <p><strong>Mnemonic Phrase:</strong></p>
-          <div class="bg-light border rounded p-2" id="mnemonicBox">
-            
-              <p>Your recovery mimephrase: <strong>river-cloud-wind-dream</strong></p>
-            
-          </div>
+            try {
+                const response = await fetch('/initiate_transfer', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    transferMessage.textContent = data.message + ' Transfer Reference: ' + data.data.transfer_code;
+                    transferMessage.className = 'success-message';
+                    // Optionally, you might want to verify the transfer after some time via webhook or polling
+                    // e.g., setTimeout(() => verifyTransfer(data.data.reference), 5000);
+                } else {
+                    transferMessage.textContent = data.message;
+                    transferMessage.className = 'error-message';
+                }
+            } catch (error) {
+                transferMessage.textContent = 'Network error initiating transfer.';
+                transferMessage.className = 'error-message';
+                console.error('Error initiating transfer:', error);
+            }
+        });
 
-          <div class="d-flex flex-wrap gap-2 mt-3">
-            <button class="btn btn-outline-secondary btn-sm" onclick="copyMnemonic()">📋 Copy Mnemonic</button>
-
-            
-              <a href="/validate_mimephrase">
-                <button class="btn btn-outline-primary btn-sm">🛡️ Validate Mimephrase</button>
-              </a>
-            
-
-            <span id="copySuccess" class="text-success align-self-center" style="display:none;">Copied!</span>
-          </div>
-
-          <!-- Transaction Ready State -->
-          
-        </div>
-
-      </div>
-    </div>
-  </div>
-  
-  <!-- Reveal Mimephrase Modal -->
-  <div class="modal fade" id="revealModal" tabindex="-1" aria-labelledby="revealModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="revealModalLabel">Enter Password to View Mimephrase</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <div class="modal-body">
-          <form id="revealForm">
-            <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
-            <div class="mt-3">
-              <button type="submit" class="btn btn-primary">Unlock</button>
-            </div>
-          </form>
-          <div id="mimephraseResult" class="mt-3 text-danger"></div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    // Handle reveal mimephrase form submission
-    document.getElementById('revealForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const password = this.password.value;
-
-      fetch('/reveal_mimephrase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `password=${encodeURIComponent(password)}`
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.mimephrase) {
-          // Show the mimephrase
-          document.getElementById('mnemonicBox').innerHTML = `<p>Your recovery mimephrase: <strong>${data.mimephrase}</strong></p>`;
-          document.getElementById('mimephraseResult').innerHTML = ''; // Clear any error message
-          const modal = bootstrap.Modal.getInstance(document.getElementById('revealModal'));
-          modal.hide(); // Close the modal
-
-          // Update UI
-          document.querySelector('[data-bs-target="#revealModal"]').style.display = 'none'; // Hide "View Mimephrase"
-          document.querySelector('[href="/validate_mimephrase"]').style.display = 'none'; // Hide "Validate Mimephrase"
-          document.getElementById('mnemonicBox').innerHTML = `<p class="text-muted">Your mimephrase has been validated. For security, it's hidden.</p>`;
-          
-          // Mark as ready to make transactions
-          document.querySelector('.text-success').style.display = 'block'; // Show transaction ready state
-        } else {
-          document.getElementById('mimephraseResult').textContent = data.error || 'An error occurred';
+        // Function to call verify_transfer endpoint (can be used after a delay or webhook)
+        async function verifyTransfer(reference) {
+            try {
+                const response = await fetch(`/verify_transfer/${reference}`);
+                const data = await response.json();
+                console.log('Verification result:', data);
+                // Update UI based on verification status
+            } catch (error) {
+                console.error('Error verifying transfer:', error);
+            }
         }
-      });
-    });
-
-    // Handle copying mnemonic
-    function copyMnemonic() {
-      const mnemonicText = document.getElementById("mnemonicBox").innerText;
-      navigator.clipboard.writeText(mnemonicText).then(() => {
-        document.getElementById("copySuccess").style.display = "inline";
-        setTimeout(() => {
-          document.getElementById("copySuccess").style.display = "none";
-        }, 2000);
-      });
-    }
-
-
-    function share() {
-      const username = "ODAH SUCCESS JOSEPH";
-      const accountNumber = "Had5kXmKUnHxjRZEpDFFYqWDx2N33GRhsD3chpoWF3rH";
-      const text = `Bank Account Details:\nName: ${username}\nNumber: ${accountNumber}\nBank: MEDIFY BANK`;
-    
-      if (navigator.share) {
-        navigator.share({
-          title: 'Bank Account Details',
-          text: text
-        }).catch(err => console.log('Error sharing:', err));
-      } else {
-        alert("Sharing is not supported on this browser.");
-      }
-    }
-  </script>
-
-  
-
-        <section>
-            <h5>Balances</h5>
-            <ul>
-                <li>💵 <strong>Naira (NGN):</strong> 0.0</li>
-                <li>💲 <strong>USD:</strong> 0.0</li>
-                <li>🌐 <strong>Solana (SOL):</strong> 0.0 SOL</li>
-            </ul>
-        </section>
-
-        <div class="button-container">
-            <a href="/logout" class="btn-logout">Logout</a>
-            <a href="#" class="btn-history">View Transaction History</a>
-            <a href="/add_funds" class="btn-add-funds">Add Funds</a>
-        </div>
-    </div>
-
+    </script>
 </body>
 </html>

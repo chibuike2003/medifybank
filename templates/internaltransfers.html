@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internal Transfers</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7fc;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 100%;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+      display: block;
+    }
+    input[type="text"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    input[type="file"] {
+      display: block;
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .qr-result {
+      background-color: #f7f7f7;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 20px;
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      height: 120px;
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Internal Transfers</h2>
+    <form id="transferForm">
+      <!-- Recipient input -->
+      <label for="recipient">Recipient Username, Email, or Phone Number</label>
+      <input type="text" id="recipient" placeholder="Enter recipient's username, email, or phone number" required>
+
+      <!-- Amount input -->
+      <label for="amount">Amount</label>
+      <input type="number" id="amount" placeholder="Enter amount" required>
+
+      <!-- Currency dropdown -->
+      <label for="currency">Select Currency</label>
+      <select id="currency">
+        <option value="NGN">Naira (₦)</option>
+        <option value="USD">US Dollar ($)</option>
+        <option value="EUR">Euro (€)</option>
+        <option value="GBP">British Pound (£)</option>
+        <option value="GHS">Ghanaian Cedi (₵)</option>
+        <option value="JPY">Japanese Yen (¥)</option>
+        <option value="AUD">Australian Dollar (A$)</option>
+        <option value="CAD">Canadian Dollar (C$)</option>
+        <option value="CHF">Swiss Franc (CHF)</option>
+        <option value="CNY">Chinese Yuan (¥)</option>
+        <option value="INR">Indian Rupee (₹)</option>
+        <!-- Add more currencies as needed -->
+      </select>
+
+      <!-- QR Code Scanning -->
+      <label for="qrScan">Scan QR Code (if available)</label>
+      <input type="file" id="qrScan" accept="image/*" onchange="scanQRCode(event)">
+
+      <!-- Description input -->
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Reason for transfer" required></textarea>
+
+      <!-- Submit Button -->
+      <button type="submit">Send Money</button>
+    </form>
+
+    <!-- QR Code Scanner result display -->
+    <div id="qrResult" class="qr-result"></div>
+  </div>
+
+  <!-- Include JS QR Code scanning library -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr/dist/jsQR.min.js"></script>
+
+  <script>
+    // QR Code scanning function
+    function scanQRCode(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = new Image();
+          img.src = e.target.result;
+
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const decoded = jsQR(imageData.data, canvas.width, canvas.height);
+
+            if (decoded) {
+              document.getElementById('qrResult').innerHTML = `QR Code Data: ${decoded.data}`;
+              // Automatically populate the recipient field (optional)
+              document.getElementById('recipient').value = decoded.data;
+            } else {
+              document.getElementById('qrResult').innerHTML = 'No QR code detected.';
+            }
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</body>
+</html>

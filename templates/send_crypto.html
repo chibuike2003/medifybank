@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalPay Crypto Gateway - Send Funds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .flash-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .flash-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .input-field {
+            @apply w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+        }
+        .btn-primary {
+            @apply w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition duration-200;
+        }
+        .btn-secondary {
+            @apply w-full px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75 transition duration-200;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-white shadow-sm py-4">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="{{ url_for('dashboard') }}" class="text-2xl font-bold text-blue-600">GlobalPay</a>
+            <div class="space-x-4">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('dashboard') }}" class="text-gray-600 hover:text-blue-600">Dashboard</a>
+                    <a href="{{ url_for('send_crypto') }}" class="text-gray-600 hover:text-blue-600">Send</a>
+                    <a href="{{ url_for('receive_crypto') }}" class="text-gray-600 hover:text-blue-600">Receive</a>
+                    <a href="{{ url_for('buy_solana') }}" class="text-gray-600 hover:text-blue-600">Buy SOL</a>
+                    <a href="{{ url_for('convert_currency') }}" class="text-gray-600 hover:text-blue-600">Convert</a>
+                    <a href="{{ url_for('transactions') }}" class="text-gray-600 hover:text-blue-600">Transactions</a>
+                    <a href="{{ url_for('activity_log') }}" class="text-gray-600 hover:text-blue-600">Activity</a>
+                    <a href="{{ url_for('report_issue') }}" class="text-gray-600 hover:text-blue-600">Help</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-600 hover:text-blue-600">Contact</a>
+                    <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-700 font-semibold">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="text-gray-600 hover:text-blue-600">Login</a>
+                    <a href="{{ url_for('signup') }}" class="text-blue-600 hover:text-blue-700 font-semibold">Sign Up</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-4">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mx-auto">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Send Funds</h1>
+
+            <form action="{{ url_for('send_crypto') }}" method="POST" class="space-y-4">
+                <div>
+                    <label for="send_currency" class="block text-gray-700 text-sm font-semibold mb-2">Currency to Send</label>
+                    <select id="send_currency" name="send_currency" class="input-field" onchange="toggleRecipientFields()" required>
+                        <option value="">Select Currency</option>
+                        {% if not has_domiciliary_account %}
+                            <option value="Naira">Naira (₦)</option>
+                        {% endif %}
+                        <option value="USDC">USDC</option>
+                        <option value="SOL">SOL</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="recipient_address" class="block text-gray-700 text-sm font-semibold mb-2">Recipient Address / Username / Account Number</label>
+                    <input type="text" id="recipient_address" name="recipient_address" class="input-field" required>
+                    <p id="address_hint" class="text-xs text-gray-500 mt-1">
+                        Enter Solana address for SOL, EVM address for USDC. For Naira, enter username for internal or bank_code:account_number for external.
+                    </p>
+                </div>
+
+                <div id="naira_external_fields" class="hidden space-y-4 border p-4 rounded-lg bg-gray-50">
+                    <h3 class="text-lg font-semibold text-gray-700">External Naira Transfer Details</h3>
+                    <div>
+                        <label for="bank_code" class="block text-gray-700 text-sm font-semibold mb-2">Bank</label>
+                        <select id="bank_code" name="bank_code" class="input-field" onchange="resolveBankAccount()">
+                            <option value="">Select Bank</option>
+                            </select>
+                    </div>
+                    <div>
+                        <label for="bank_account_number" class="block text-gray-700 text-sm font-semibold mb-2">Account Number</label>
+                        <input type="text" id="bank_account_number" name="bank_account_number" class="input-field" oninput="resolveBankAccount()">
+                    </div>
+                    <div>
+                        <label for="bank_account_name" class="block text-gray-700 text-sm font-semibold mb-2">Account Name (Auto-filled)</label>
+                        <input type="text" id="bank_account_name" name="bank_account_name" class="input-field bg-gray-100" readonly>
+                    </div>
+                    <p id="bank_resolution_status" class="text-sm text-gray-600"></p>
+                </div>
+
+                <div>
+                    <label for="amount" class="block text-gray-700 text-sm font-semibold mb-2">Amount</label>
+                    <input type="number" id="amount" name="amount" step="any" min="0.00000001" class="input-field" required>
+                </div>
+
+                <div>
+                    <label for="note" class="block text-gray-700 text-sm font-semibold mb-2">Note (Optional)</label>
+                    <input type="text" id="note" name="note" class="input-field">
+                </div>
+
+                <button type="submit" class="btn-primary">Send Funds</button>
+            </form>
+        </div>
+
+        <script>
+            const sendCurrencySelect = document.getElementById('send_currency');
+            const recipientAddressInput = document.getElementById('recipient_address');
+            const addressHint = document.getElementById('address_hint');
+            const nairaExternalFields = document.getElementById('naira_external_fields');
+            const bankCodeSelect = document.getElementById('bank_code');
+            const bankAccountNumberInput = document.getElementById('bank_account_number');
+            const bankAccountNameInput = document.getElementById('bank_account_name');
+            const bankResolutionStatus = document.getElementById('bank_resolution_status');
+
+            const isDomiciliary = {{ 'true' if has_domiciliary_account else 'false' }};
+
+            async function loadBanks() {
+                try {
+                    const response = await fetch('/get-banks-for-account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({}) // No specific account number needed for all banks
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        bankCodeSelect.innerHTML = '<option value="">Select Bank</option>';
+                        data.banks.forEach(bank => {
+                            const option = document.createElement('option');
+                            option.value = bank.code;
+                            option.textContent = bank.name;
+                            bankCodeSelect.appendChild(option);
+                        });
+                    } else {
+                        console.error('Failed to load banks:', data.message);
+                        bankResolutionStatus.textContent = 'Failed to load banks.';
+                        bankResolutionStatus.classList.add('text-red-500');
+                    }
+                } catch (error) {
+                    console.error('Network error loading banks:', error);
+                    bankResolutionStatus.textContent = 'Network error during account resolution.';
+                    bankResolutionStatus.classList.add('text-red-500');
+                }
+            }
+
+            async function resolveBankAccount() {
+                const accountNumber = bankAccountNumberInput.value.trim();
+                const bankCode = bankCodeSelect.value;
+
+                bankAccountNameInput.value = '';
+                bankResolutionStatus.textContent = '';
+                bankResolutionStatus.classList.remove('text-green-500', 'text-red-500');
+
+                if (accountNumber.length === 10 && bankCode) {
+                    bankResolutionStatus.textContent = 'Resolving account...';
+                    try {
+                        const response = await fetch('/verify-bank', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ account_number: accountNumber, bank_code: bankCode })
+                        });
+                        const data = await response.json();
+                        if (data.success) {
+                            bankAccountNameInput.value = data.account_name;
+                            bankResolutionStatus.textContent = 'Account resolved.';
+                            bankResolutionStatus.classList.add('text-green-500');
+                        } else {
+                            bankResolutionStatus.textContent = data.message || 'Account resolution failed.';
+                            bankResolutionStatus.classList.add('text-red-500');
+                        }
+                    } catch (error) {
+                        console.error('Error resolving account:', error);
+                        bankResolutionStatus.textContent = 'Network error during account resolution.';
+                        bankResolutionStatus.classList.add('text-red-500');
+                    }
+                }
+            }
+
+            function toggleRecipientFields() {
+                const selectedCurrency = sendCurrencySelect.value;
+                nairaExternalFields.classList.add('hidden');
+                recipientAddressInput.placeholder = '';
+                addressHint.textContent = '';
+
+                if (selectedCurrency === 'Naira') {
+                    if (isDomiciliary) {
+                        // This case is handled by Flask route directly, but good to show UI feedback
+                        addressHint.textContent = 'As a Domiciliary Account holder, Naira transfers are not allowed.';
+                        recipientAddressInput.disabled = true;
+                        return;
+                    }
+                    addressHint.textContent = 'Enter recipient username for internal transfer, or bank_code:account_number for external bank transfer.';
+                    nairaExternalFields.classList.remove('hidden');
+                    loadBanks(); // Load banks when Naira is selected
+                } else if (selectedCurrency === 'USDC') {
+                    addressHint.textContent = 'Enter ERC-20 (EVM) wallet address (starts with 0x).';
+                    recipientAddressInput.placeholder = 'e.g., 0x...';
+                } else if (selectedCurrency === 'SOL') {
+                    addressHint.textContent = 'Enter Solana wallet address.';
+                    recipientAddressInput.placeholder = 'e.g., 1...';
+                }
+                recipientAddressInput.disabled = false; // Enable if it was disabled
+            }
+
+            // Initial call on page load
+            document.addEventListener('DOMContentLoaded', toggleRecipientFields);
+        </script>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; 2025 GlobalPay Crypto Gateway. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
